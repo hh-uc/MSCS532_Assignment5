@@ -7,11 +7,10 @@ import csv
 import random
 import statistics
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from quicksort import quicksort, randomized_quicksort
-
 
 SortFunction = Callable[[list[int]], object]
 DISTRIBUTIONS = ("random", "sorted", "reverse-sorted")

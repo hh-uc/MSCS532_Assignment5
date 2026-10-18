@@ -7,7 +7,6 @@ import random
 from collections.abc import MutableSequence
 from typing import TypeVar
 
-
 T = TypeVar("T")
 
 
@@ -38,12 +37,17 @@ def quicksort(
     if high is None:
         high = len(values) - 1
 
-    if low < high:
+    while low < high:
         pivot_index = _partition(values, low, high)
 
-        # The pivot is in its final location, so sort only the two sides.
-        quicksort(values, low, pivot_index - 1)
-        quicksort(values, pivot_index + 1, high)
+        # Recurse on the smaller side, then loop over the larger side. This
+        # preserves Quicksort's partitioning while bounding Python call depth.
+        if pivot_index - low < high - pivot_index:
+            quicksort(values, low, pivot_index - 1)
+            low = pivot_index + 1
+        else:
+            quicksort(values, pivot_index + 1, high)
+            high = pivot_index - 1
 
     return values
 
@@ -72,12 +76,16 @@ def randomized_quicksort(
     if rng is None:
         rng = random.Random()
 
-    if low < high:
+    while low < high:
         pivot_index = _randomized_partition(values, low, high, rng)
 
-        # Reuse one generator for the full recursion so seeded runs repeat.
-        randomized_quicksort(values, low, pivot_index - 1, rng)
-        randomized_quicksort(values, pivot_index + 1, high, rng)
+        # Reuse one generator and recurse only on the smaller partition.
+        if pivot_index - low < high - pivot_index:
+            randomized_quicksort(values, low, pivot_index - 1, rng)
+            low = pivot_index + 1
+        else:
+            randomized_quicksort(values, pivot_index + 1, high, rng)
+            high = pivot_index - 1
 
     return values
 

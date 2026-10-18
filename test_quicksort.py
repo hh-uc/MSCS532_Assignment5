@@ -41,9 +41,16 @@ class QuicksortTests(unittest.TestCase):
     def test_reverse_sorted_input(self) -> None:
         self.assert_both_sort(list(range(99, -1, -1)))
 
+    def test_large_ordered_inputs(self) -> None:
+        self.assert_both_sort(list(range(1200)))
+        self.assert_both_sort(list(range(1199, -1, -1)))
+
+    def test_large_equal_input(self) -> None:
+        self.assert_both_sort([7] * 1200)
+
     def test_many_random_inputs(self) -> None:
         generator = random.Random(532)
-        for size in range(0, 101):
+        for size in range(101):
             with self.subTest(size=size):
                 values = [generator.randint(-500, 500) for _ in range(size)]
                 self.assert_both_sort(values)

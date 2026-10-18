@@ -23,7 +23,8 @@ python3 -m unittest -v
 ```
 
 The tests cover empty and single-element inputs, duplicates, negative values,
-sorted and reverse-sorted inputs, and 101 generated input sizes.
+1,200-element sorted, reverse-sorted, and equal-value inputs, and 101 generated
+input sizes.
 
 ## Run the benchmark
 
@@ -47,6 +48,10 @@ create highly unbalanced partitions and expose quadratic growth. Random pivot
 selection adds a small amount of overhead on random inputs, but it avoids tying
 the partition pattern to the input order. The randomized version therefore
 remains much faster on the ordered inputs in this experiment.
+
+Both implementations recurse only on the smaller partition and loop over the
+larger one. This keeps the Python call stack at `O(log n)` depth even when the
+partition choices produce quadratic running time.
 
 See `report.pdf` for the implementation details, theoretical analysis,
 measurements, and limitations.
